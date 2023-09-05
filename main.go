@@ -52,12 +52,25 @@ func main() {
 
 	c.OnScraped(func(r *colly.Response) {
 		fmt.Println(pokemonProducts[0].url)
+
+		for _, pokemonProduct := range pokemonProducts {
+			record := []string{
+				pokemonProduct.url,
+				pokemonProduct.image,
+				pokemonProduct.name,
+				pokemonProduct.price,
+			}
+
+			writer.Write(record)
+		}
 	})
 
-	// downloading the target HTML page
-	err := c.Visit("https://scrapeme.live/shop/page/1/")
+	defer writer.Flush()
 
-	if err != nil {
+	// downloading the target HTML page
+	err1 := c.Visit("https://scrapeme.live/shop/page/1/")
+
+	if err1 != nil {
 		log.Printf("failed to visit url: %v\n", err)
 		return
 	}
